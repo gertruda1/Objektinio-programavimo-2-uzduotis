@@ -3,18 +3,15 @@
 #include <limits>
 #include <iomanip>
 #include <algorithm> 
+#include <vector>
+#include <numeric>
 struct student
 {
     std::string vardas, pavarde;
     double galutinis;
 };
 
-double rastimediana (int a[], int n)
-{
-    std::sort(a, a + n);
-    if (n % 2 == 0) return (double)(a[n / 2 - 1] + a[n / 2]) / 2.0;
-    else return a[n / 2];
-}
+
 
 void ArSkaiciusTinkamas (int& skaicius, int pradzia, int pabaiga)
 {
@@ -28,10 +25,21 @@ void ArSkaiciusTinkamas (int& skaicius, int pradzia, int pabaiga)
     }
 }
 
+double rastimediana (std::vector<int> vekt)
+{
+    typedef std::vector<int>::size_type vec_sz;
+    vec_sz size = vekt.size();
+    if (size == 0)
+        throw std::domain_error("median of an empty vector");
+    std::sort(vekt.begin(), vekt.end());
+    vec_sz mid = size / 2;
+    return (double)(size % 2 == 0 ? ((double)(vekt[mid]) + (double)(vekt[mid-1])) / 2 : (double)(vekt[mid]));
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 int main ()
 {
-    int n, m;
+    int m;
     double ndvid, ndsum = 0, egz;
 
     ///////////////Duomenu ivedimas/////////////////////
@@ -39,7 +47,7 @@ int main ()
     std::cout << "Iveskite, kiek is viso yra studnetu " << std::endl;
     std::cin >> m;
     /////////////////////Tikrinam, ar gerai ivesti duomenys//////////////////////
-    while(m <=0 || !std::cin)
+    while(m <= 0 || !std::cin)
     {
         if(std::cin.fail() || m <=0)
         {
@@ -70,8 +78,6 @@ int main ()
     }
     //////////////////////////Baigiam tikrinti/////////////////////////////////////
     
-    int a = 1;
-    int *C = new int [a];
 
     ////////////////////////////////Duomenu ivedimas ir skaiciavimai //////////////////////////////////
     for (int i = 0; i < m; i++)
@@ -79,25 +85,28 @@ int main ()
         std::cout << "Iveskite "<< i + 1 << " studento varda ir pavarde " << std::endl;
         std::cin >> studentas[i].vardas >> studentas[i].pavarde;
 
-        int a = 1;
         
         std::cout << "Iveskite namu darbu rezultatus (desimtbaleje sistemoje)" << std::endl;
 
-        
-        std::cin >> C[0];
-        ArSkaiciusTinkamas(C[0], 0, 10);
+        std::vector<int> vektorius;
+        int nd;
+        int kiek = 0;
 
-        if(C[0] != 0)
+        int tmp = 1;
+        for(int j = 0; j < tmp; j++)
         {
-            for(int j = 1; j < a + 1; j++)
-            {
-                std::cin>>C[j];
-                ArSkaiciusTinkamas(C[j], 0, 10);
-                a++;
-                if(C[j] == 0) break;
-            }
+            std::cin >> nd;
+            ArSkaiciusTinkamas(nd, 0, 10);
+            if (nd == 0)
+                tmp = 0;
+                else
+                {
+                   vektorius.push_back(nd);
+                }
+                ndsum = accumulate(vektorius.begin(), vektorius.end(), 0);
+                tmp++;
+                kiek++;
         }
-
 
 
         std::cout << "Iveskite " << i+1 << " studento egzamino rezultata (desimtbaleje sistemoje)" << std::endl;
@@ -112,12 +121,12 @@ int main ()
                 std::cin>>egz;
             }
         }
-        ndvid = ndsum / n;
+        ndvid = ndsum / (kiek - 1);
         if (kas == "vidurkis")
         {
             studentas[i].galutinis = 0.4 * ndvid + 0.6 * egz;
         }
-        else studentas[i].galutinis = 0.4 * rastimediana(C, a - 1) + 0.6 * egz;
+        else studentas[i].galutinis = 0.4 * rastimediana(vektorius) + 0.6 * egz;
     }
 
 
