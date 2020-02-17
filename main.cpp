@@ -5,12 +5,13 @@
 #include <algorithm> 
 #include <vector>
 #include <numeric>
+
+#define daugiausia 50
 struct student
 {
     std::string vardas, pavarde;
     double galutinis;
 };
-
 
 
 void ArSkaiciusTinkamas (int& skaicius, int pradzia, int pabaiga)
@@ -44,7 +45,7 @@ int main ()
 
     ///////////////Duomenu ivedimas/////////////////////
 
-    std::cout << "Iveskite, kiek is viso yra studnetu " << std::endl;
+    std::cout << "Iveskite, kiek is viso yra studentu " << std::endl;
     std::cin >> m;
     /////////////////////Tikrinam, ar gerai ivesti duomenys//////////////////////
     while(m <= 0 || !std::cin)
@@ -76,6 +77,24 @@ int main ()
             break;
         }
     }
+
+
+    std::string kaip;
+    std::cout << "Namu darbu resultatai random ar ne(Ivesti 'random' / 'nerandom')? " << std::endl;
+    std::cin >> kaip;
+
+    ////////////////////////Tikrinam, ar gerai ivesti duomenys////////////////////////////
+
+    while(!std::cin || kaip!="random" && kaip!="nerandom" )
+    {
+        std::cout<<"Ivestas netinkamas dydis, pasirinkite random ar nerandom: ";
+        std::cin>>kaip;
+
+        if(kaip=="random" && kaip=="nerandom" )
+        {
+            break;
+        }
+    }
     //////////////////////////Baigiam tikrinti/////////////////////////////////////
     
 
@@ -85,29 +104,51 @@ int main ()
         std::cout << "Iveskite "<< i + 1 << " studento varda ir pavarde " << std::endl;
         std::cin >> studentas[i].vardas >> studentas[i].pavarde;
 
-        
-        std::cout << "Iveskite namu darbu rezultatus (desimtbaleje sistemoje)" << std::endl;
 
         std::vector<int> vektorius;
-        int nd;
-        int kiek = 0;
+            int nd;
+            int kiek = 0;
 
-        int tmp = 1;
-        for(int j = 0; j < tmp; j++)
+        if (kaip == "nerandom")
+
         {
-            std::cin >> nd;
-            ArSkaiciusTinkamas(nd, 0, 10);
-            if (nd == 0)
-                tmp = 0;
-                else
-                {
-                   vektorius.push_back(nd);
-                }
-                ndsum = accumulate(vektorius.begin(), vektorius.end(), 0);
-                tmp++;
-                kiek++;
-        }
+            std::cout << "Iveskite namu darbu rezultatus (desimtbaleje sistemoje)" << std::endl;
 
+            int tmp = 1;
+            for(int j = 0; j < tmp; j++)
+            {
+                std::cin >> nd;
+                ArSkaiciusTinkamas(nd, 0, 10);
+                if (nd == 0)
+                    tmp = 0;
+                    else
+                    {
+                    vektorius.push_back(nd);
+                    }
+                    ndsum = accumulate(vektorius.begin(), vektorius.end(), 0);
+                    tmp++;
+                    kiek++;
+            }
+        }
+        
+        if(kaip == "random")
+        {
+            srand(time(NULL));
+            int galas=0; int kiekis;
+            ndsum = 0;
+            std::cout << "Generuojamu pazymiu kiekis: "; std::cin >> kiekis;
+            ArSkaiciusTinkamas (kiekis, 1, daugiausia);
+            std::cout << "Namu darbu balai: " ;
+                do
+                {   
+                    vektorius.push_back(1+(double)rand ()/ RAND_MAX * 10);
+                    std::cout  << vektorius[kiek]<<" " ;
+                    /// apskaiciuojama sugeneruoto vektoriaus elementu suma
+                    ndsum = accumulate(vektorius.begin(), vektorius.end(), 0);
+                    kiekis--;
+                    kiek++;
+                } while (galas != kiekis);
+        }
 
         std::cout << "Iveskite " << i+1 << " studento egzamino rezultata (desimtbaleje sistemoje)" << std::endl;
         std::cin >> egz;
