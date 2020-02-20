@@ -2,7 +2,7 @@
 #include <string>
 #include <limits>
 #include <iomanip>
-#include <algorithm> 
+#include <algorithm>
 
 #define daugiausia 50
 struct student
@@ -71,26 +71,8 @@ int main ()
         }
     }
     //////////////////////////Baigiam tikrinti/////////////////////////////////////
-    
 
 
-    std::string kaip;
-    std::cout << "Namu darbu resultatai random ar ne(Ivesti 'random' / 'nerandom')? " << std::endl;
-    std::cin >> kaip;
-
-    ////////////////////////Tikrinam, ar gerai ivesti duomenys////////////////////////////
-
-    while(!std::cin || kaip!="random" && kaip!="nerandom" )
-    {
-        std::cout<<"Ivestas netinkamas dydis, pasirinkite random ar nerandom: ";
-        std::cin>>kaip;
-
-        if(kaip=="random" && kaip=="nerandom" )
-        {
-            break;
-        }
-    }
-    //////////////////////////Baigiam tikrinti/////////////////////////////////////
 
     ////////////////////////////////Duomenu ivedimas ir skaiciavimai //////////////////////////////////
     for (int i = 0; i < m; i++)
@@ -100,10 +82,8 @@ int main ()
 
         int a = 1;
         int *C = new int [a];
-        
 
-         if (kaip == "nerandom")
-         {
+
             std::cout << "Iveskite namu darbu rezultatus (desimtbaleje sistemoje)" << std::endl;
 
             std::cin >> C[0];
@@ -121,25 +101,7 @@ int main ()
                     if(C[j] == 0) break;
                 }
             }
-         }
 
-         if (kaip == "random")
-         {
-            srand(time(NULL));
-            int galas = 0; int kiekis; ndsum = 0;
-            std::cout << "Generuojamu pazymiu kiekis: "; std::cin >> kiekis;
-            ArSkaiciusTinkamas (kiekis, 1, daugiausia);
-            std::cout << "Namu darbu balai: " ;
-            do
-            {
-                C[a] = 1 + (double)rand ()/ RAND_MAX * 10;
-                std::cout  << C[a] <<" " ;
-                ndsum += C[a];
-                a++; kiekis--;
-            } while (galas != kiekis);
-
-            std::cout << ndsum;
-        }
 
         std::cout << std::endl;
 
@@ -185,3 +147,4 @@ int main ()
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     return 0;
 }
+
