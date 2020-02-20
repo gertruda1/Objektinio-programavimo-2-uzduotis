@@ -2,7 +2,7 @@
 #include <string>
 #include <limits>
 #include <iomanip>
-#include <algorithm> 
+#include <algorithm>
 #include <vector>
 #include <numeric>
 
@@ -96,7 +96,7 @@ int main ()
         }
     }
     //////////////////////////Baigiam tikrinti/////////////////////////////////////
-    
+
 
     ////////////////////////////////Duomenu ivedimas ir skaiciavimai //////////////////////////////////
     for (int i = 0; i < m; i++)
@@ -129,8 +129,21 @@ int main ()
                     tmp++;
                     kiek++;
             }
+
+            std::cout << "Iveskite " << i+1 << " studento egzamino rezultata (desimtbaleje sistemoje)" << std::endl;
+            std::cin >> egz;
+            while(egz <=0 || !std::cin || egz>10 )
+            {
+                if(std::cin.fail() || egz <=0 || egz>10 )
+                {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+                    std::cout<<"Ivestas netinkamas dydis, bandykite dar karta: ";
+                    std::cin>>egz;
+                }
+            }
         }
-        
+
         if(kaip == "random")
         {
             srand(time(NULL));
@@ -140,7 +153,7 @@ int main ()
             ArSkaiciusTinkamas (kiekis, 1, daugiausia);
             std::cout << "Namu darbu balai: " ;
                 do
-                {   
+                {
                     vektorius.push_back(1+(double)rand ()/ RAND_MAX * 10);
                     std::cout  << vektorius[kiek]<<" " ;
                     /// apskaiciuojama sugeneruoto vektoriaus elementu suma
@@ -148,20 +161,11 @@ int main ()
                     kiekis--;
                     kiek++;
                 } while (galas != kiekis);
+            egz = (1 + rand() % 10);
+            std::cout << "Egzamino balas: " << egz << std::endl;
         }
+        std::cout << std::endl;
 
-        std::cout << "Iveskite " << i+1 << " studento egzamino rezultata (desimtbaleje sistemoje)" << std::endl;
-        std::cin >> egz;
-        while(egz <=0 || !std::cin || egz>10 )
-        {
-            if(std::cin.fail() || egz <=0 || egz>10 )
-            {
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-                std::cout<<"Ivestas netinkamas dydis, bandykite dar karta: ";
-                std::cin>>egz;
-            }
-        }
         ndvid = ndsum / (kiek - 1);
         if (kas == "vidurkis")
         {
@@ -187,3 +191,4 @@ int main ()
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     return 0;
 }
+
