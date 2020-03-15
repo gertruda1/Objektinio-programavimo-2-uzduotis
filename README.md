@@ -61,9 +61,13 @@ Išmatuotas laikas pateikiamas sekundėmis. Namų darbų kiekis sugeneruotuose f
  # Releases
  
  [**v0.1**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v.0.1)
+ 
  [**v0.2**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.2)
+ 
  [**v0.3**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.3)
+ 
  [**v0.4**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.4)
+ 
  [**v0.5**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.5)
  
  
