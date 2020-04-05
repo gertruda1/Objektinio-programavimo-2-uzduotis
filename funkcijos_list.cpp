@@ -98,6 +98,45 @@ void paskirstymas_listas (std::list<student> &a)
     }
 }
 
+void paskirstymas1_listas (std::list<student> &a, std::list<student> &vargs, std::list<student> &kiet)
+{
+    for (auto i = a.begin(); i != a.end(); i++)
+    {
+        if (i->galutinis < 5.0)
+        {
+            vargs.push_back(*i);
+        } 
+        else kiet.push_back(*i);
+    }
+    a.clear();
+}
+
+void paskirstymas2_listas (std::list<student> &a, std::list<student> &vargs)
+{
+    for (auto i = a.begin(); i != a.end(); i++) 
+    {
+        if (i->galutinis < 5)
+        {
+            vargs.push_back(*i);
+        }
+    }
+
+
+     auto itr = a.begin(); 
+ while (  itr != a.end() )
+ {
+    if (itr->galutinis < 5)
+    {
+        a.erase(itr++);
+    }
+
+    else
+    {
+        ++itr;
+    }
+  }
+}
+
 
 void F_duomenu_ivedimas_listas(std::string kas, std::list<student> &studentas)
 {
@@ -233,14 +272,39 @@ void spausdinimas_listas(std::list<student> a, std::string b)
     rez2.close();
 }
 
+void spausdinimas_listas (std::list<student> kiet, std::list<student> vargs, std::string b)
+{
+        std::ofstream rez1 ("vargsiukai.txt");
+    if (b == "vidurkis") rez1 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez1 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez1 << "-----------------------------------------------------------" << std::endl;
+    for (auto itr = vargs.begin(); itr != vargs.end(); itr++)
+    {
+        rez1 << itr->pavarde << " \t " << itr->vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+        itr->galutinis << std::endl;
+    }
+    rez1.close();
+    
+    std::ofstream rez2 ("kietiakai.txt");
+    if (b == "vidurkis") rez2 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez2 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez2 << "-----------------------------------------------------------" << std::endl;
+    for (auto itr = kiet.begin(); itr != kiet.end(); itr++)
+    {
+        rez2 << itr->pavarde << " \t " << itr->vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+        itr->galutinis << std::endl;
+    }
+    rez2.close();
+}
+
 void listas()
 {
     std::string kas;
     std::string ar_generuoti;
     std::string duomenu_ivedimas;
-    int koki_faila_generuoti, kiek_nd;
+    int koki_faila_generuoti, kiek_nd, strategija;
     std::list<student> studentas;
-    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd);
+    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd, strategija);
     
     if(ar_generuoti == "generuoti")
     {
@@ -250,7 +314,7 @@ void listas()
         std::chrono::duration<double> diff = end-start;
         std::cout << "failo generavimo laikas: " << diff.count() << std::endl;
     }
-    if(ar_generuoti == "generuoti" || duomenu_ivedimas == "nuskaityti")
+    if (ar_generuoti == "generuoti" || duomenu_ivedimas == "nuskaityti")
     {
         auto start = std::chrono::high_resolution_clock::now();
         skaitymas_is_failo_listas(studentas, kas);
@@ -258,24 +322,74 @@ void listas()
         std::chrono::duration<double> diff = end-start;
         std::cout << "failo nuskaitymo laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        paskirstymas_listas(studentas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+        if (strategija == 3)
+        {
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas_listas(studentas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        spausdinimas_listas(studentas, kas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_listas(studentas, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+
+        else if (strategija == 1)
+        {
+            std::list<student> vargsiukai, kietiakai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas1_listas(studentas, vargsiukai, kietiakai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_listas(kietiakai, vargsiukai, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+
+        else
+        {
+            std::list<student> vargsiukai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas2_listas(studentas, vargsiukai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_listas(studentas, vargsiukai, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
     }
 
     ///////////////Duomenu ivedimas/////////////////////
     if(duomenu_ivedimas == "ivesti")
     {
         F_duomenu_ivedimas_listas(kas, studentas);
-        paskirstymas_listas (studentas);
-        spausdinimas_listas(studentas, kas);
+        if (strategija == 3)
+        {
+            paskirstymas_listas (studentas);
+            spausdinimas_listas(studentas, kas);
+        }
+        else if (strategija == 1)
+        {
+            std::list<student> vargsiukai, kietiakai;
+            paskirstymas1_listas(studentas, vargsiukai, kietiakai);
+            spausdinimas_listas(kietiakai, vargsiukai, kas);
+        }
+        else
+        {
+            std::list<student> vargsiukai;
+            paskirstymas2_listas(studentas, vargsiukai);
+            spausdinimas_listas(studentas, vargsiukai, kas);
+        }
     }
 }

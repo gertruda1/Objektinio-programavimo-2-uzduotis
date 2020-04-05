@@ -29,6 +29,11 @@ bool compareAlphabet(student a, student b)
     return a.vardas < b.vardas;
 }
 
+bool rikiuojam_pagal_balaD(student a, student  b)
+{
+    return a.galutinis < b.galutinis;
+}
+
 void failugeneravimas1000 (int a)
 {
     Rand_int rnd(1, 10);
@@ -185,7 +190,8 @@ void skaitymas_is_failo (int egz, std::string kas, double ndvid, double ndsum, s
     duom.close();
 }
 
-void pirmine_apklausa (std::string &kas, std::string &ar_generuoti, std::string &duomenu_ivedimas, int &koki_faila_generuoti, int &kiek_nd)
+void pirmine_apklausa (std::string &kas, std::string &ar_generuoti, std::string &duomenu_ivedimas, 
+int &koki_faila_generuoti, int &kiek_nd, int &strategija)
 {
     std::cout << "Vidurkis ar mediana? (vidurkis / mediana)" << std::endl;
     std::cin >> kas;
@@ -199,6 +205,10 @@ void pirmine_apklausa (std::string &kas, std::string &ar_generuoti, std::string 
             break;
         }
     }
+
+    std::cout << "Kokia studentu dalijimo i dvi kategorijas strategija? Panaudojant du naujus konteinerius (1), Panaudojant viena nauja konteineri (2), Nenaudojant nauju konteineriu (3)" << std::endl;
+    std::cin >> strategija;
+    ArSkaiciusTinkamas(strategija, 1, 3);
 
     std::cout << "Generuoti duomenu failus ar negeneruoti? (generuoti / negeneruoti)" << std::endl;
     std::cin >> ar_generuoti;
@@ -266,6 +276,37 @@ void paskirstymas (std::vector<student> &a)
         if (a[i].galutinis < 5) a[i].grupe = "vargsiukai";
         else a[i].grupe = "kietiakai";
     }
+}
+
+void paskirstymas1 (std::vector<student> &a, std::vector<student> &vargs, std::vector<student> &kiet)
+{
+    int n = std::count_if (a.begin(), a.end(), [](student x) 
+    { 
+        return x.galutinis < 5; 
+          
+    } ); 
+    vargs.resize(n);  
+    kiet.resize(a.size() - n); 
+    partition_copy(a.begin(), a.end(), vargs.begin(),  
+                                     kiet.begin(), [](student x) 
+    { 
+        return x.galutinis < 5; 
+    }); 
+    a.clear();
+}
+
+void paskirstymas2 (std::vector<student> &a, std::vector<student> &kiet)
+{
+    std::sort(a.begin(), a.end(), rikiuojam_pagal_balaD);
+    
+    int n = 0;
+        while (a[n].galutinis < 5.0 && n != a.size())
+            n++;
+
+    std::copy(a.begin() + n, a.end(), std::back_inserter(kiet));
+
+    a.resize(n);
+    a.shrink_to_fit();
 }
 
 void F_duomenu_ivedimas(double ndsum, int egz, double ndvid, std::string kas, std::vector<student> &studentas)
@@ -381,6 +422,7 @@ void spausdinimas(std::vector<student> a, std::string b)
     if (b == "vidurkis") rez1 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
     else rez1 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
     rez1 << "-----------------------------------------------------------" << std::endl;
+
     for (int i = 0; i < a.size(); i++)
     {
         if (a[i].grupe == "vargsiukai")
@@ -388,7 +430,7 @@ void spausdinimas(std::vector<student> a, std::string b)
             a[i].galutinis << std::endl;
     }
     rez1.close();
-    
+        
     std::ofstream rez2 ("kietiakai.txt");
     if (b == "vidurkis") rez2 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
     else rez2 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
@@ -401,6 +443,32 @@ void spausdinimas(std::vector<student> a, std::string b)
     }
     rez2.close();
 }
+void spausdinimas(std::vector<student> kiet, std::vector<student> vargs, std::string b)
+{
+    std::ofstream rez1 ("vargsiukai.txt");
+    if (b == "vidurkis") rez1 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez1 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez1 << "-----------------------------------------------------------" << std::endl;
+
+    for (int i = 0; i < vargs.size(); i++)
+    {
+        rez1 << vargs[i].pavarde << " \t " << vargs[i].vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+        vargs[i].galutinis << std::endl;
+    }
+    rez1.close();
+        
+    std::ofstream rez2 ("kietiakai.txt");
+    if (b == "vidurkis") rez2 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez2 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez2 << "-----------------------------------------------------------" << std::endl;
+    for (int i = 0; i < kiet.size(); i++)
+    {
+            rez2 << kiet[i].pavarde << " \t " << kiet[i].vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+            kiet[i].galutinis << std::endl;
+    }
+    rez2.close();
+}
+
 
 void koks_konteineris (char& simbolis, char pirmas, char antras, char trecias)
 {
@@ -420,9 +488,9 @@ void vektorius()
     std::string kas;
     std::string ar_generuoti;
     std::string duomenu_ivedimas;
-    int koki_faila_generuoti, egz, kiek_nd;
+    int koki_faila_generuoti, egz, kiek_nd, strategija;
     std::vector<student> studentas;
-    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd);
+    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd, strategija);
     
     if(ar_generuoti == "generuoti")
     {
@@ -440,17 +508,52 @@ void vektorius()
         std::chrono::duration<double> diff = end-start;
         std::cout << "failo nuskaitymo laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        paskirstymas(studentas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+        if (strategija == 3)
+        {
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas(studentas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        spausdinimas(studentas, kas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas(studentas, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+        else if (strategija == 1)
+        {
+            std::vector<student> vargsiukai, kietiakai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas1(studentas, vargsiukai, kietiakai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas(kietiakai, vargsiukai, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+        else
+        {
+            std::vector<student> kietiakai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas2(studentas, kietiakai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            std::sort(kietiakai.begin(), kietiakai.end(), compareAlphabet);
+            std::sort(studentas.begin(), studentas.end(), compareAlphabet);
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas(kietiakai, studentas, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
     }
 
 
@@ -458,7 +561,25 @@ void vektorius()
     if(duomenu_ivedimas == "ivesti")
     {
         F_duomenu_ivedimas(ndsum, egz, ndvid, kas, studentas);
-        paskirstymas (studentas);
-        spausdinimas(studentas, kas);
+        if(strategija == 3)
+        {
+            paskirstymas (studentas);
+            spausdinimas(studentas, kas);
+        }
+        else if (strategija == 1)
+        {
+            std::vector<student> vargsiukai, kietiakai;
+            paskirstymas1(studentas, vargsiukai, kietiakai);
+            spausdinimas(kietiakai, vargsiukai, kas);
+        }
+        else
+        {
+            std::vector<student> kietiakai;
+            std::sort(kietiakai.begin(), kietiakai.end(), compareAlphabet);
+            std::sort(studentas.begin(), studentas.end(), compareAlphabet);
+            paskirstymas2(studentas, kietiakai);
+            spausdinimas(kietiakai, studentas, kas);
+        }
+        
     }
 }

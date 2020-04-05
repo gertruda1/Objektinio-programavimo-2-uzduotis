@@ -86,6 +86,32 @@ void paskirstymas_deque (std::deque<student> &a)
     }
 }
 
+void paskirstymas1_deque (std::deque<student> &a, std::deque<student> &vargs, std::deque<student> &kiet)
+{
+    for (auto i = a.begin(); i != a.end(); i++)
+    {
+        if (i->galutinis < 5) vargs.push_back(*i);
+        else kiet.push_back(*i);
+    }
+    a.clear();
+}
+
+
+void paskirstymas2_deque (std::deque<student> &a, std::deque<student> &kiet)
+{
+    std::sort(a.begin(), a.end(), rikiuojam_pagal_balaD);
+    
+    int ne = 0;
+        while (a[ne].galutinis < 5.0 && ne != a.size())
+            ne ++;
+
+    std::copy(a.begin() + ne, a.end(), std::back_inserter(kiet));
+
+    a.resize(ne);
+    a.shrink_to_fit();
+}
+
+
 void F_duomenu_ivedimas_deque (double ndsum, int egz, double ndvid, std::string kas, std::deque<student> &studentas)
 {
         int m;
@@ -220,6 +246,32 @@ void spausdinimas_deque(std::deque<student> a, std::string b)
     rez2.close();
 }
 
+void spausdinimas_deque(std::deque<student> kiet, std::deque<student> vargs, std::string b)
+{
+    std::ofstream rez1 ("vargsiukai.txt");
+    if (b == "vidurkis") rez1 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez1 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez1 << "-----------------------------------------------------------" << std::endl;
+
+    for (int i = 0; i < vargs.size(); i++)
+    {
+        rez1 << vargs[i].pavarde << " \t " << vargs[i].vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+        vargs[i].galutinis << std::endl;
+    }
+    rez1.close();
+        
+    std::ofstream rez2 ("kietiakai.txt");
+    if (b == "vidurkis") rez2 << "Pavarde \t Vardas \t\t Galutinis (Vid.)" << std::endl;
+    else rez2 << "Pavarde \t Vardas \t\t Galutinis (Med.) " << std::endl;
+    rez2 << "-----------------------------------------------------------" << std::endl;
+    for (int i = 0; i < kiet.size(); i++)
+    {
+            rez2 << kiet[i].pavarde << " \t " << kiet[i].vardas << " \t\t " << std::fixed << std::setprecision(2) <<
+            kiet[i].galutinis << std::endl;
+    }
+    rez2.close();
+}
+
 
 void deque()
 {
@@ -227,9 +279,9 @@ void deque()
     std::string kas;
     std::string ar_generuoti;
     std::string duomenu_ivedimas;
-    int koki_faila_generuoti, egz, kiek_nd;
+    int koki_faila_generuoti, egz, kiek_nd, strategija;
     std::deque<student> studentas;
-    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd);
+    pirmine_apklausa(kas, ar_generuoti, duomenu_ivedimas, koki_faila_generuoti, kiek_nd, strategija);
     
     if(ar_generuoti == "generuoti")
     {
@@ -247,17 +299,52 @@ void deque()
         std::chrono::duration<double> diff = end-start;
         std::cout << "failo nuskaitymo laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        paskirstymas_deque(studentas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+        if (strategija == 3)
+        {
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas_deque(studentas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
 
-        start = std::chrono::high_resolution_clock::now();
-        spausdinimas_deque(studentas, kas);
-        end = std::chrono::high_resolution_clock::now();
-        diff = end-start;
-        std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_deque(studentas, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+        else if (strategija == 1)
+        {
+            std::deque<student> vargsiukai, kietiakai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas1_deque(studentas, vargsiukai, kietiakai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_deque(kietiakai, vargsiukai, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
+        else
+        {
+            std::deque<student> kietuoliai;
+            start = std::chrono::high_resolution_clock::now();
+            paskirstymas2_deque(studentas, kietuoliai);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "dalijimo i dvi grupes laikas: " << diff.count() << std::endl;
+
+            std::sort(kietuoliai.begin(), kietuoliai.end(), compareAlphabet);
+            std::sort(studentas.begin(), studentas.end(), compareAlphabet);
+            start = std::chrono::high_resolution_clock::now();
+            spausdinimas_deque(kietuoliai, studentas, kas);
+            end = std::chrono::high_resolution_clock::now();
+            diff = end-start;
+            std::cout << "spausdinimo laikas: " << diff.count() << std::endl;
+        }
     }
 
 
@@ -265,7 +352,27 @@ void deque()
     if(duomenu_ivedimas == "ivesti")
     {
         F_duomenu_ivedimas_deque(ndsum, egz, ndvid, kas, studentas);
-        paskirstymas_deque (studentas);
-        spausdinimas_deque(studentas, kas);
+
+        if (strategija == 3)
+        {
+            paskirstymas_deque (studentas);
+            spausdinimas_deque(studentas, kas);
+        }
+        
+        else if(strategija == 1)
+        {
+            std::deque<student> vargsiukai, kietiakai;
+            paskirstymas1_deque(studentas, vargsiukai, kietiakai);
+            spausdinimas_deque(kietiakai, vargsiukai, kas);
+        }
+        else
+        {
+            std::deque<student> kietiakai;
+            paskirstymas2_deque(studentas, kietiakai);
+            std::sort(kietiakai.begin(), kietiakai.end(), compareAlphabet);
+            std::sort(studentas.begin(), studentas.end(), compareAlphabet);
+            spausdinimas_deque(kietiakai, studentas, kas);
+        }
+        
     }
 }
