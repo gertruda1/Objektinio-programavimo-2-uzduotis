@@ -151,3 +151,5 @@ Duomenų rūšiavimo laikų naudojant/nenaudojant papildomų algoritmų ir naudo
  
  [**v0.5**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.5)
  
+ [**v1.0**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v1.0)
+ 
