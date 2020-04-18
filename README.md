@@ -143,13 +143,31 @@ Duomenų rūšiavimo laikų naudojant/nenaudojant papildomų algoritmų ir naudo
  
  [**v0.1**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v.0.1)
  
+  * Programa apskaičiuojanti galutinius rezultatus pagal vartotojo suvestus arba atsitiktinai sugeneruotus duomenis.
+ 
  [**v0.2**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.2)
+ 
+ * Vartotojas gali pasirinkti, ar nori pats ivesti duomenis apie studentus, ar nori, kad duomenis programa nuskaitytų iš duomenų failo pavadinimu "kursiokai.txt".
+ * Programa, išvesdama galutinius rezultatus, studentus surūšiuoja pagal vardus pagal abėcėlę ir juos gražiai išlygiuoja.
  
  [**v0.3**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.3)
  
+ * Šioje versijoje yra panaudota struktūra, kurioje yra duomenys apie studentą: vardas, pavardė ir galutinis rezultatas.
+ * Funkcijos yra saugomos atrastes.h faile, o strukturos antrastes2.h faile.
+ * Panaudotas išimčių valdymas.
+ 
  [**v0.4**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.4)
+ 
+  * Programa gali pasirinktinai generuoti studentų duomenų failą.
+  * Gali būti vykdomas duomenų nuskaitymas.
+  * Studentai rūšiuojami į dvi grupes.
+  * Skaičiuojamas programos vykdymo laikas.
  
  [**v0.5**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v0.5)
  
+ * Šioje versijoje vartotojui leidžiama pasirinkti, kokio tipo konteineryje jis nori saugoti duomenis (vector, list ar deque).
+ 
  [**v1.0**](https://github.com/gertruda1/Objektinio-programavimo-2-uzduotis/releases/tag/v1.0)
+ 
+ * Šioje versijoje vartotojui papildomai leidžiama pasirinkti, kokią strategiją naudoti studentų dalinimui į dvi grupes pagal galutinį balą.
  
